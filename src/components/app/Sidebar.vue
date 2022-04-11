@@ -1,5 +1,5 @@
 <template>
-  <ul class="sidenav app-sidenav open">
+  <ul class="sidenav app-sidenav" :class="{open: isOpen}">
     <router-link v-for="link in links"
                  :key="link.pathName"
                  active-class="active"
@@ -7,9 +7,9 @@
                  custom
                  v-slot="{ navigate, href, route, isActive, isExactActive }"
     >
-      <li  :class="[isExactActive && 'active']">
+      <li :class="[isExactActive && 'active']">
         <a :href="href" class="waves-effect waves-orange pointer"
-           @click="navigate">{{link.title}}</a>
+           @click="navigate">{{ link.title }}</a>
       </li>
     </router-link>
 
@@ -19,6 +19,7 @@
 <script>
 export default {
   name: "Sidebar",
+  props: ['isOpen'],
   setup() {
     const links = [
       {
