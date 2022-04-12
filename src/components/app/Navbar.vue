@@ -14,6 +14,7 @@
               class="dropdown-trigger black-text"
               href="#"
               data-target="dropdown"
+              ref="dropdown"
           >
             USER NAME
             <i class="material-icons right">arrow_drop_down</i>
@@ -21,13 +22,13 @@
 
           <ul id='dropdown' class='dropdown-content'>
             <li>
-              <a href="#" class="black-text">
+              <router-link :to="{name: 'profile'}" class="black-text">
                 <i class="material-icons">account_circle</i>Профиль
-              </a>
+              </router-link>
             </li>
             <li class="divider" tabindex="-1"></li>
             <li>
-              <a href="#" class="black-text">
+              <a href="#" class="black-text" @click.prevent="logout">
                 <i class="material-icons">assignment_return</i>Выйти
               </a>
             </li>
@@ -39,8 +40,29 @@
 </template>
 
 <script>
+import {onMounted, ref} from "vue";
+import {useRouter} from "vue-router"
+
 export default {
-  name: "Navbar"
+  name: "Navbar",
+  setup(){
+    const router = useRouter()
+    const dropdown = ref(null)
+    function logout(){
+      console.log('logout')
+      router.push({name: 'login', query:{message: 'logout'}})
+    }
+    onMounted(()=>{
+      console.log('dropdown', dropdown.value)
+      M.Dropdown.init(dropdown.value, {
+        constrainWidth: true
+      })
+    })
+    return{
+      dropdown,
+      logout
+    }
+  }
 }
 </script>
 
