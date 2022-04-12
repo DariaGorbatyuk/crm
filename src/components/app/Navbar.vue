@@ -5,7 +5,7 @@
         <a href="#" @click.prevent="$emit('toggleSidebar')">
           <i class="material-icons black-text">dehaze</i>
         </a>
-        <span class="black-text">12.12.12</span>
+        <span class="black-text">{{ date }}</span>
       </div>
 
       <ul class="right hide-on-small-and-down">
@@ -40,27 +40,48 @@
 </template>
 
 <script>
-import {onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import {useRouter} from "vue-router"
 
 export default {
   name: "Navbar",
-  setup(){
+  setup() {
     const router = useRouter()
     const dropdown = ref(null)
-    function logout(){
-      console.log('logout')
-      router.push({name: 'login', query:{message: 'logout'}})
+    const dropdownObj = ref(null)
+    const interval = ref(null)
+    const date = ref(null)
+    const options = {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
     }
-    onMounted(()=>{
-      console.log('dropdown', dropdown.value)
-      M.Dropdown.init(dropdown.value, {
+    function logout() {
+      console.log('logout')
+      router.push({name: 'login', query: {message: 'logout'}})
+    }
+
+    onMounted(() => {
+      interval.value = setInterval(() => {
+        date.value = new Intl.DateTimeFormat('ru-RU', options).format(new Date())
+      }, 1000)
+      dropdownObj.value = M.Dropdown.init(dropdown.value, {
         constrainWidth: true
       })
     })
-    return{
+    onBeforeUnmount(() => {
+      clearInterval(interval.value)
+      if(dropdownObj.value && dropdownObj.value.destroy){
+        dropdownObj.value.destroy()
+      }
+    })
+    return {
       dropdown,
-      logout
+      logout,
+      date
     }
   }
 }
