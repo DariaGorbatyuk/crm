@@ -1,5 +1,5 @@
 <template>
-  <form class="card auth-card">
+  <form class="card auth-card" @submit.prevent="submitHandler">
     <div class="card-content">
       <span class="card-title">Домашняя бухгалтерия</span>
       <div class="input-field">
@@ -7,18 +7,28 @@
             id="email"
             type="text"
             class="validate"
+            :class="{invalid: v$.email.$errors.length>0}"
+            v-model.trim="state.email"
         >
+
         <label for="email">Email</label>
-        <small class="helper-text invalid">Email</small>
+        <small class="helper-text invalid"
+               v-for="error in v$.email.$errors"
+               :key="error.$uid"
+        >{{ error.$message }}</small>
       </div>
       <div class="input-field">
         <input
             id="password"
             type="password"
             class="validate"
+            :class="{invalid: v$.password.$errors.length>0}"
+            v-model="state.password"
         >
         <label for="password">Пароль</label>
-        <small class="helper-text invalid">Password</small>
+        <small class="helper-text invalid"
+               v-for="error in v$.password.$errors"
+               :key="error.$uid">{{ error.$message }}</small>
       </div>
     </div>
     <div class="card-action">
@@ -34,15 +44,58 @@
 
       <p class="center">
         Нет аккаунта?
-        <a href="/">Зарегистрироваться</a>
+        <router-link :to="{name: 'register'}">Зарегистрироваться</router-link>
       </p>
     </div>
   </form>
 </template>
 
 <script>
+
+import {useRouter} from "vue-router";
+import {reactive, ref} from "vue";
+import useVuelidate from '@vuelidate/core'
+import {required, email} from '@vuelidate/validators'
+
 export default {
-  name: "Login"
+  name: "Login",
+  components: {
+    useVuelidate,
+    required,
+    email
+  },
+
+  setup() {
+    const router = useRouter()
+    const state = reactive({
+      email: '',
+      password: ''
+    })
+    const rules = {
+      email: {required, email},
+      password: {required, min: 3}
+    }
+
+    async function submitHandler() {
+      const isFormCorrect = await v$.value.$validate()
+      if (!isFormCorrect) {
+        console.log('invalid')
+        v$.value.email.$errors.forEach(error=>console.log(error.$message))
+        return
+      }
+      console.log('v$', v$.value)
+      console.log('correct')
+      // console.log('v$', v$.value)
+      // router.push({name: 'home'})
+    }
+
+    const v$ = useVuelidate(rules, state)
+    return {
+      submitHandler,
+      state,
+      v$
+    }
+  }
 }
 </script>
 
