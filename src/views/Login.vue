@@ -79,14 +79,15 @@ export default {
     async function submitHandler() {
       const isFormCorrect = await v$.value.$validate()
       if (!isFormCorrect) {
-        console.log('invalid')
-        v$.value.email.$errors.forEach(error=>console.log(error.$message))
+        v$.value.email.$errors.forEach(error => console.log(error.$message))
         return
       }
-      console.log('v$', v$.value)
-      console.log('correct')
-      // console.log('v$', v$.value)
-      // router.push({name: 'home'})
+      const formData = {
+        email: state.email,
+        password: state.password
+      }
+      await router.push({name: 'home'})
+      console.log('formData', formData)
     }
 
     const v$ = useVuelidate(rules, state)
