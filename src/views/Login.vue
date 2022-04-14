@@ -72,8 +72,8 @@ export default {
       password: ''
     })
     const rules = {
-      email: {required, email},
-      password: {required, min: 3}
+      email: {required, email, $lazy: true},
+      password: {required, $lazy: true}
     }
 
     async function submitHandler() {
