@@ -52,11 +52,11 @@
 
 <script>
 
-import {useRouter} from "vue-router";
-import {reactive, ref} from "vue";
+import {useRouter, useRoute} from "vue-router";
+import {inject, onMounted, reactive} from "vue";
 import useVuelidate from '@vuelidate/core'
 import {required, email} from '@vuelidate/validators'
-
+import messages from "@/utils/messages";
 export default {
   name: "Login",
   components: {
@@ -65,8 +65,11 @@ export default {
     email
   },
 
-  setup() {
+  setup(_, context) {
     const router = useRouter()
+    const route = useRoute()
+    const $message = inject('$message')
+    const $error = inject('$error')
     const state = reactive({
       email: '',
       password: ''
@@ -91,6 +94,12 @@ export default {
     }
 
     const v$ = useVuelidate(rules, state)
+
+    onMounted(() => {
+      if(route.query.message){
+        $message(messages[route.query.message])
+      }
+    })
     return {
       submitHandler,
       state,

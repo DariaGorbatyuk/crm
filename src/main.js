@@ -4,5 +4,9 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import 'materialize-css/dist/js/materialize.min.js'
-
-createApp(App).use(store).use(router).mount('#app')
+import messagePlugin from "@/utils/message.plugin";
+createApp(App)
+    .use(store)
+    .use(router)
+    .use(messagePlugin)
+    .mount('#app')
