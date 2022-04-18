@@ -57,6 +57,7 @@ import {inject, onMounted, reactive} from "vue";
 import useVuelidate from '@vuelidate/core'
 import {required, email} from '@vuelidate/validators'
 import messages from "@/utils/messages";
+import {useStore} from "vuex";
 export default {
   name: "Login",
   components: {
@@ -68,6 +69,7 @@ export default {
   setup(_, context) {
     const router = useRouter()
     const route = useRoute()
+    const store = useStore()
     const $message = inject('$message')
     const $error = inject('$error')
     const state = reactive({
@@ -89,8 +91,10 @@ export default {
         email: state.email,
         password: state.password
       }
-      await router.push({name: 'home'})
-      console.log('formData', formData)
+      try{
+        await store.dispatch('login', formData)
+        await router.push({name: 'home'})
+      }catch (e){}
     }
 
     const v$ = useVuelidate(rules, state)
