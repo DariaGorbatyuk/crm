@@ -30,7 +30,7 @@
                v-if="v$.passport.required.$invalid"
         >Это поле не может быть пустым</small>
         <small class="helper-text invalid"
-        v-else-if="v$.passport.minLength.$invalid">
+               v-else-if="v$.passport.minLength.$invalid">
           Минимальная длина 6 символов
         </small>
       </div>
@@ -79,6 +79,7 @@ import {useVuelidate} from '@vuelidate/core'
 import {required, email, minLength} from '@vuelidate/validators'
 import {reactive} from "vue";
 import {useRouter} from "vue-router";
+import {useStore} from "vuex";
 
 export default {
   name: "Register",
@@ -88,6 +89,7 @@ export default {
     email
   },
   setup() {
+    const store = useStore()
     const router = useRouter()
     const passportMinLength = 6
     const state = reactive({
@@ -100,7 +102,7 @@ export default {
       email: {required, email, $lazy: true},
       passport: {required, minLength: minLength(passportMinLength), $lazy: true},
       name: {required, $lazy: true},
-      agreement: {checked: v=> v, $lazy: true}
+      agreement: {checked: v => v, $lazy: true}
     }
 
     async function submitHandler() {
@@ -111,8 +113,9 @@ export default {
       const formData = {
         email: state.email,
         password: state.passport,
-        name: state. name
+        name: state.name
       }
+      await store.dispatch('register', formData)
       await router.push({name: 'home'})
       console.log(formData)
     }

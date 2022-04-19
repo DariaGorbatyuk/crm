@@ -42,10 +42,12 @@
 <script>
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {useRouter} from "vue-router"
+import {useStore} from "vuex";
 
 export default {
   name: "Navbar",
   setup() {
+    const store = useStore()
     const router = useRouter()
     const dropdown = ref(null)
     const dropdownObj = ref(null)
@@ -59,9 +61,9 @@ export default {
       minute: '2-digit',
       second: '2-digit'
     }
-    function logout() {
-      console.log('logout')
-      router.push({name: 'login', query: {message: 'logout'}})
+    async function logout() {
+      await store.dispatch('logout')
+      await router.push({name: 'login', query: {message: 'logout'}})
     }
 
     onMounted(() => {
