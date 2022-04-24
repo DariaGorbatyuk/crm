@@ -115,8 +115,12 @@ export default {
         password: state.passport,
         name: state.name
       }
-      await store.dispatch('register', formData)
-      await router.push({name: 'home'})
+      try {
+        await store.dispatch('register', formData)
+        await router.push({name: 'home'})
+      } catch (e) {
+        store.commit('setError', e)
+      }
     }
 
     const v$ = useVuelidate(rules, state)

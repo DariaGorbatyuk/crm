@@ -39,17 +39,13 @@ export default {
 
         },
         async register({dispatch, commit}, {email, password, name}) {
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-                const user = userCredential.user
-                const id = user.uid;
-                await set(ref(database, `users/${id}/info`), {
-                    bill: 10000,
-                    name
-                })
-            } catch (error) {
-                commit('setError', error)
-            }
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+            const user = userCredential.user
+            const id = user.uid;
+            await set(ref(database, `users/${id}/info`), {
+                bill: 10000,
+                name
+            })
         }
     }
 }
