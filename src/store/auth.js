@@ -39,24 +39,17 @@ export default {
             });
         },
         async register({dispatch, commit}, {email, password, name}) {
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // Signed in
-                    const user = userCredential.user;
-                    return user.uid
-                }).then((id) => {
-                try {
-                    set(ref(database, `users/${id}/info`), {
-                        bill: 10000,
-                        name
-                    })
-                } catch (e) {
-                    commit('setError', e)
-                }
-            })
-                .catch((error) => {
-                    commit('setError', error)
-                });
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+                const user = userCredential.user
+                const id = user.uid;
+                await set(ref(database, `users/${id}/info`), {
+                    bill: 10000,
+                    name
+                })
+            } catch (error) {
+                commit('setError', error)
+            }
         }
     }
 }
