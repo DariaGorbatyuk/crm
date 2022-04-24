@@ -15,17 +15,10 @@ const auth = getAuth();
 const database = getDatabase(appFire);
 export default {
     state() {
-        return {
-
-        }
+        return {}
 
     },
-    mutations: {
-        getUid() {
-            const user = auth.currentUser
-            return user ? user.uid : null
-        }
-    },
+    mutations: {},
     getters: {},
     actions: {
         async login({dispatch, commit}, {email, password}) {
@@ -34,35 +27,35 @@ export default {
                 const user = userCredentials.user
                 console.log('user', user)
             } catch (error) {
+                commit('setError', error)
                 throw error
             }
         },
-        async logout() {
+        async logout({commit}) {
             signOut(auth).then(() => {
                 console.log('logouuuut')
             }).catch((error) => {
-                // An error happened.
+                commit('setError', error)
             });
         },
-        async register({dispatch},{email, password, name}) {
+        async register({dispatch, commit}, {email, password, name}) {
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     // Signed in
-
                     const user = userCredential.user;
                     return user.uid
-                    // ...
-                }).then((id)=>{
-                const uid = dispatch('getUid')
-                set(ref(database, `users/${id}/info`), {
-                    bill: 10000,
-                    name
-                })
+                }).then((id) => {
+                try {
+                    set(ref(database, `users/${id}/info`), {
+                        bill: 10000,
+                        name
+                    })
+                } catch (e) {
+                    commit('setError', e)
+                }
             })
                 .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    // ..
+                    commit('setError', error)
                 });
         }
     }

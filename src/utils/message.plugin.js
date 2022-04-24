@@ -5,7 +5,7 @@ export default {
         }
 
         const $error = function (html){
-            M.toast({html:`[Error]: ${html}`})
+            M.toast({html:`[Ошибка]: ${html}`})
         }
 
         app.provide('$message', $message)
