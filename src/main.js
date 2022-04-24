@@ -6,8 +6,6 @@ import store from './store'
 import 'materialize-css/dist/js/materialize.min.js'
 import messagePlugin from "@/utils/message.plugin";
 
-let app
-
 createApp(App)
     .use(store)
     .use(router)
