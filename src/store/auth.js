@@ -25,18 +25,18 @@ export default {
             try {
                 const userCredentials = await signInWithEmailAndPassword(auth, email, password)
                 const user = userCredentials.user
-                console.log('user', user)
             } catch (error) {
                 commit('setError', error)
                 throw error
             }
         },
         async logout({commit}) {
-            signOut(auth).then(() => {
-                console.log('logouuuut')
-            }).catch((error) => {
+            try {
+                await signOut(auth)
+            } catch (error) {
                 commit('setError', error)
-            });
+            }
+
         },
         async register({dispatch, commit}, {email, password, name}) {
             try {
