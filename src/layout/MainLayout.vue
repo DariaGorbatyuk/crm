@@ -19,7 +19,8 @@
 <script>
 import Navbar from "@/components/app/Navbar";
 import Sidebar from "@/components/app/Sidebar";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {useStore} from "vuex";
 
 export default {
   name: "MainLayout",
@@ -28,7 +29,13 @@ export default {
     Sidebar
   },
   setup(){
+    const store = useStore()
     let isOpen = ref(true)
+     onMounted(async () => {
+       if (!store.getters.info) {
+         await store.dispatch('fetchInfo')
+       }
+     })
     return{
       isOpen,
     }

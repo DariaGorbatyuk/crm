@@ -12,19 +12,25 @@ const firebaseConfig = {
 };
 const appFire = initializeApp(firebaseConfig);
 const auth = getAuth();
+
 const database = getDatabase(appFire);
 export default {
-    state() {
-        return {}
+    state:{
+    },
+    mutations: {
+        getUid(){
+            return auth?.currentUser?.uid
+        }
+    },
+    getters: {
 
     },
-    mutations: {},
-    getters: {},
     actions: {
         async login({dispatch, commit}, {email, password}) {
             try {
                 const userCredentials = await signInWithEmailAndPassword(auth, email, password)
                 const user = userCredentials.user
+                console.log(auth)
             } catch (error) {
                 commit('setError', error)
                 throw error
@@ -33,6 +39,7 @@ export default {
         async logout({commit}) {
             try {
                 await signOut(auth)
+                commit('clearInfo')
             } catch (error) {
                 commit('setError', error)
             }
